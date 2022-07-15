@@ -41,16 +41,17 @@ namespace GuardianTalesWeb.Models
             model.Entity<Guilde>().HasKey(g => g.Guilde_Num).HasName("GUILD_NUM");
             model.Entity<Team_Type>().HasKey(tt => tt.Type_Team_Num).HasName("Type_Team_Num");
             model.Entity<Joueur>().HasKey(j => j.Joueur_Num).HasName("JOUEUR_NUM");
-            //Clé composée
             model.Entity<Team>().HasKey(t => t.Type_Team_Num).HasName("Type_Team_Num");
             model.Entity<Team>().HasKey(t => t.Joueur_Num).HasName("Joueur_Num");
           
             //Association 1n entre joueur et guilde
             model.Entity<Joueur>().HasOne( j => j.Guilde).WithMany(g => g.Joueurs).HasForeignKey(j=> j.Guilde_Num).IsRequired();
 
-            //Association n n entre Type et joueur (table team)
-            model.Entity<Team>().HasOne(t => t.Joueur).WithMany(j => j.Teams).HasForeignKey(t =>t.Joueur_Num).IsRequired();
-            model.Entity<Team>().HasOne(t => t.Team_Type).WithMany(tt => tt.Teams).HasForeignKey(t => t.Type_Team_Num).IsRequired();
+          
+
+            //Clé composée
+            model.Entity<Team>()
+           .HasKey(t => new { t.Type_Team_Num, t.Joueur_Num });
 
         }
 
@@ -82,6 +83,20 @@ namespace GuardianTalesWeb.Models
                 {
                     return joueur;
                 }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id" id de la guilde></param>
+        /// <returns>Liste des joueurs de la guilde</returns>
+        public List<Joueur> GetJoueurFromGuild(int id)
+        {
+            using(var db = new GuardianTalesContext())
+            {
+                var joueurs = db.Joueur.Where(j => j.Guilde_Num == id).Include(j =>j.Guilde).Include(joueur => joueur.Teams).ThenInclude(t => t.Team_Type).ToList();
+                return joueurs;
             }
         }
     }
