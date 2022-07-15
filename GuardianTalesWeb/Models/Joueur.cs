@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GuardianTalesWeb.Models
 {
@@ -11,5 +12,6 @@ namespace GuardianTalesWeb.Models
 
        
         public Guilde Guilde { get; set; }
+        public ICollection<Team> Teams { get; set; }
     }
 }

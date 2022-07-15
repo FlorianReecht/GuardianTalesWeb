@@ -9,6 +9,8 @@ namespace GuardianTalesWeb.Models
     {
         public DbSet<Joueur> Joueur { get; set; }
         public DbSet<Guilde> Guilde { get; set; }
+        public DbSet<Team_Type> Team_Type { get; set; }
+        public DbSet<Team> Team { get; set; }
         public string ConnectionString { get; set; }
 
         public GuardianTalesContext(string connectionString)
@@ -35,12 +37,24 @@ namespace GuardianTalesWeb.Models
 
         protected override void OnModelCreating(ModelBuilder model)
         {
+            //Primary Keys
             model.Entity<Guilde>().HasKey(g => g.Guilde_Num).HasName("GUILD_NUM");
-            model.Entity<Joueur>().HasKey(j =>j.Joueur_Num).HasName("JOUEUR_NUM");
+            model.Entity<Team_Type>().HasKey(tt => tt.Type_Team_Num).HasName("Type_Team_Num");
+            model.Entity<Joueur>().HasKey(j => j.Joueur_Num).HasName("JOUEUR_NUM");
+            //Clé composée
+            model.Entity<Team>().HasKey(t => t.Type_Team_Num).HasName("Type_Team_Num");
+            model.Entity<Team>().HasKey(t => t.Joueur_Num).HasName("Joueur_Num");
+          
+            //Association 1n entre joueur et guilde
             model.Entity<Joueur>().HasOne( j => j.Guilde).WithMany(g => g.Joueurs).HasForeignKey(j=> j.Guilde_Num).IsRequired();
+
+            //Association n n entre Type et joueur (table team)
+            model.Entity<Team>().HasOne(t => t.Joueur).WithMany(j => j.Teams).HasForeignKey(t =>t.Joueur_Num).IsRequired();
+            model.Entity<Team>().HasOne(t => t.Team_Type).WithMany(tt => tt.Teams).HasForeignKey(t => t.Type_Team_Num).IsRequired();
+
         }
 
-        public List<Joueur> GetAllJoueur()
+        public List<Joueur> GetAllJoueur()//Retourne tous les joueurs
         {
 
             List<Joueur> retour = new List<Joueur>();
@@ -55,30 +69,20 @@ namespace GuardianTalesWeb.Models
             }
             return retour;
         }
-
-        //public List<Joueur> GetAllJoueur()
-        //{
-        //    List<Joueur> retour = new List<Joueur>();
-        //    using(MySqlConnection conn = GetConnection())
-        //    {
-        //        conn.Open();
-        //        MySqlCommand cmd = new MySqlCommand("select * from joueur",conn);
-        //        using(var reader = cmd.ExecuteReader())
-        //        {
-        //            while(reader.Read())
-        //            {
-        //                retour.Add(new Joueur()
-        //                {
-        //                    Joueur_Num = Convert.ToInt32(reader["JOUEUR_NUM"]),
-        //                    Joueur_Name = reader["JOUEUR_NOM"].ToString(),
-        //                    Joueur_Guild = Convert.ToInt32(reader["JOUEUR_GUILD"])
-        //                });
-
-
-        //            }
-        //        }
-        //    }
-        //    return retour;
-        //}
+        public Joueur GetOneJoueur(int id)//Retourne le joueur d'id ID
+        {
+            using (var db = new GuardianTalesContext())
+            {
+                var joueur = db.Joueur.Where(j=>j.Joueur_Num == id).Include(joueur => joueur.Teams).ThenInclude(t => t.Team_Type).FirstOrDefault();
+                if (joueur == null)
+                {
+                    throw new System.Exception();
+                }
+                else
+                {
+                    return joueur;
+                }
+            }
+        }
     }
 }

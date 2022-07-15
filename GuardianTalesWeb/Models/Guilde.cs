@@ -6,7 +6,7 @@ namespace GuardianTalesWeb.Models
     {
        public int Guilde_Num { get; set; }
 
-       public   int Guilde_Name { get; set; }
+       public   string Guilde_Name { get; set; }
 
        public ICollection<Joueur> Joueurs { get; set; }
 

@@ -10,5 +10,11 @@ namespace GuardianTalesWeb.Controllers
             GuardianTalesContext context = HttpContext.RequestServices.GetService(typeof(GuardianTalesWeb.Models.GuardianTalesContext)) as GuardianTalesContext;
             return View(context.GetAllJoueur());
         }
+        public IActionResult Joueur(int id)
+        {
+            GuardianTalesContext context = HttpContext.RequestServices.GetService(typeof(GuardianTalesWeb.Models.GuardianTalesContext)) as GuardianTalesContext;
+            return View(context.GetOneJoueur(id));
+
+        }
     }
 }

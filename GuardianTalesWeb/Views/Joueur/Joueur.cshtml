@@ -1,0 +1,39 @@
+﻿@model GuardianTalesWeb.Models.Joueur
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>Informations du joueur</h1>
+
+<p> @Html.DisplayFor(model => model.Joueur_Nom)</p>
+
+<h1>Teams du Joueur</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               Element
+            </th>
+            <th>
+                Dégats
+            </th>
+        </tr>
+    </thead>
+
+
+
+
+
+@foreach (var item in Model.Teams)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Team_Type.Type_Team_Lib)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem=> item.Team_Degats)
+        </td>
+    </tr>
+    
+}
+
