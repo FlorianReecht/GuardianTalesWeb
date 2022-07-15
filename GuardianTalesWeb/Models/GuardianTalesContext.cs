@@ -35,9 +35,9 @@ namespace GuardianTalesWeb.Models
 
         protected override void OnModelCreating(ModelBuilder model)
         {
-            model.Entity<Guilde>().HasKey(g => g.GuildNum).HasName("GUILD_NUM");
+            model.Entity<Guilde>().HasKey(g => g.Guilde_Num).HasName("GUILD_NUM");
             model.Entity<Joueur>().HasKey(j =>j.Joueur_Num).HasName("JOUEUR_NUM");
-            model.Entity<Joueur>().HasOne( j => j.JoueurGuilde).WithMany(g => g.Joueurs).IsRequired();
+            model.Entity<Joueur>().HasOne( j => j.Guilde).WithMany(g => g.Joueurs).HasForeignKey(j=> j.Guilde_Num).IsRequired();
         }
 
         public List<Joueur> GetAllJoueur()
@@ -46,7 +46,7 @@ namespace GuardianTalesWeb.Models
             List<Joueur> retour = new List<Joueur>();
             using (var db = new GuardianTalesContext())
             {
-                var joueurs = db.Joueur.Include(j => j.JoueurGuilde).ToList();
+                var joueurs = db.Joueur.Include(j => j.Guilde).ToList();
                 foreach (Joueur joueur in joueurs)
                 {
                     retour.Add(joueur);

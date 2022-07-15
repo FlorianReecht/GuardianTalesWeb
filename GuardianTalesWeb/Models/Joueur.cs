@@ -7,9 +7,9 @@ namespace GuardianTalesWeb.Models
         
         public int Joueur_Num { get; set; }
         public string Joueur_Nom { get; set;}
-        public int GuildNum { get; set; }
+        public int Guilde_Num { get; set; }
 
-        [ForeignKey("GuildNum")]//Underscore peut être?
-        public Guilde JoueurGuilde { get; set; }
+       
+        public Guilde Guilde { get; set; }
     }
 }
